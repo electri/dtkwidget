@@ -21,9 +21,11 @@
 #include <QDBusPendingCall>
 #include <QDebug>
 #include <QFile>
+#ifndef DTK_NO_MULTIMEDIA
 #include <QMediaPlayer>
-#include <QGSettings/QGSettings>
 #include <QSound>
+#endif
+#include <QGSettings/QGSettings>
 
 DWIDGET_BEGIN_NAMESPACE
 
@@ -83,6 +85,7 @@ static QList<QUrl> path2urls(const QList<QString> &paths)
     return list;
 }
 
+#ifndef DTK_NO_MULTIMEDIA
 static QMediaPlayer *soundEffectPlayer()
 {
     static QMediaPlayer *player = Q_NULLPTR;
@@ -94,6 +97,7 @@ static QMediaPlayer *soundEffectPlayer()
 
     return player;
 }
+#endif
 
 static QString soundEffectFilePath(const QString &name)
 {
@@ -262,6 +266,7 @@ bool DDesktopServices::previewSystemSoundEffect(const QString &name)
         return false;
     }
 
+#ifndef DTK_NO_MULTIMEDIA
     if (path.endsWith("wav")) {
         QSound::play(path);
     } else {
@@ -269,6 +274,9 @@ bool DDesktopServices::previewSystemSoundEffect(const QString &name)
         player->setMedia(QUrl::fromLocalFile(path));
         player->play();
     }
+#else
+    qWarning() << "not support multimedia";
+#endif
 
     return true;
 }

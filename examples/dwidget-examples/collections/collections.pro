@@ -15,18 +15,6 @@ unix {
     QT += dbus
 }
 
-#!isEmpty(DTK_NO_MULTIMEDIA){
-    DEFINES += DTK_NO_MULTIMEDIA
-#    QT -= multimedia
-#} else {
-#    HEADERS  += \
-#        cameraform.h
-#    SOURCES += \
-#        cameraform.cpp
-#    FORMS += \
-#        cameraform.ui
-#}
-
 !isEmpty(DTK_STATIC_LIB){
     DEFINES += DTK_STATIC_LIB
 }

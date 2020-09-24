@@ -37,9 +37,12 @@
 #include <QHBoxLayout>
 #include <QEvent>
 #include <QAction>
-#include <QAudioInput>
 #include <QTimer>
+#ifndef DTK_NO_MULTIMEDIA
+#include <QAudioInput>
 #include <QAudioDeviceInfo>
+#endif
+
 #include <QCoreApplication>
 #include <QToolButton>
 #include <QDBusPendingCallWatcher>
@@ -241,8 +244,12 @@ void DSearchEdit::clearEdit()
 
 bool DSearchEdit::isVoiceInput() const
 {
+#ifndef DTK_NO_MULTIMEDIA
     D_DC(DSearchEdit);
     return d->voiceInput && d->voiceInput->state() == QAudio::ActiveState;
+#else
+    return false;
+#endif
 }
 
 void DSearchEdit::setPlaceholderText(const QString &text)
@@ -344,8 +351,8 @@ void DSearchEditPrivate::init()
     voiceAction->setCheckable(true);
     voiceAction->setEnabled(false);
     lineEdit->addAction(voiceAction, QLineEdit::TrailingPosition);
-
     q->connect(voiceAction, SIGNAL(triggered(bool)), q, SLOT(_q_onVoiceActionTrigger(bool)));
+
     // 语音输入按钮
     QDBusInterface testSpeechToText("com.iflytek.aiassistant",
                                "/aiassistant/iat",
@@ -391,7 +398,7 @@ void DSearchEditPrivate::_q_toEditMode(bool focus)
 
 void DSearchEditPrivate::_q_onVoiceActionTrigger(bool checked)
 {
-#ifdef ENABLE_AI
+#if (!defined DTK_NO_MULTIMEDIA) && (defined ENABLE_AI)
     if (checked) {
         voiceAction->setIcon(QIcon::fromTheme("button_voice_active"));
 
@@ -434,6 +441,8 @@ void DSearchEditPrivate::_q_onVoiceActionTrigger(bool checked)
             voiceInput = nullptr;
         }
     }
+#else
+    Q_UNUSED(checked)
 #endif
 }
 

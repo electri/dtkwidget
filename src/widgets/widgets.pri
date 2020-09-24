@@ -29,7 +29,8 @@ mac{
     LIBS += -framework Foundation -framework Cocoa
 }
 
-isEmpty(DTK_NO_MULTIMEDIA){
+!isEmpty(DTK_NO_MULTIMEDIA){
+    message( no multimedia is empty)
     HEADERS += \
         $$PWD/dvideowidget.h
 
